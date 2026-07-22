@@ -26,7 +26,7 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Run unit tests only
-        run: mvn test -Dtest=*Test
+        run: mvn test -Dtest=*Tests
 
   code-analysis:
     name: SonarQube Analysis
