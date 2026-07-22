@@ -2,7 +2,6 @@ package org.trainee.userservice.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.trainee.userservice.model.PaymentCard;
@@ -11,6 +10,7 @@ import org.trainee.userservice.repository.PaymentCardRepository;
 import org.trainee.userservice.repository.UserRepository;
 
 import java.time.LocalDate;
+import java.time.Month;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -20,13 +20,18 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-public class PaymentCardControllerTests extends BaseIntegrationTest {
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PaymentCardRepository cardRepository;
+class PaymentCardControllerTests extends BaseIntegrationTest {
+    private final MockMvc mockMvc;
+    private final UserRepository userRepository;
+    private final PaymentCardRepository cardRepository;
+
+    PaymentCardControllerTests(MockMvc mockMvc,
+                                      UserRepository userRepository,
+                                      PaymentCardRepository cardRepository) {
+        this.mockMvc = mockMvc;
+        this.userRepository = userRepository;
+        this.cardRepository = cardRepository;
+    }
 
     @BeforeEach
     void cleanDatabase() {
@@ -133,7 +138,7 @@ public class PaymentCardControllerTests extends BaseIntegrationTest {
         var user = new User();
         user.setName("John");
         user.setSurname("Smith");
-        user.setBirthDate(LocalDate.of(1995, 1, 1));
+        user.setBirthDate(LocalDate.of(1995, Month.JANUARY, 1));
         user.setEmail("john@test.com");
         user.setActive(true);
 
@@ -144,7 +149,7 @@ public class PaymentCardControllerTests extends BaseIntegrationTest {
         var card = new PaymentCard();
         card.setNumber("1234567890123456");
         card.setHolder("JOHN SMITH");
-        card.setExpirationDate(LocalDate.of(2030, 1, 1));
+        card.setExpirationDate(LocalDate.of(2030, Month.JANUARY, 1));
         card.setActive(false);
         card.setUser(user);
 

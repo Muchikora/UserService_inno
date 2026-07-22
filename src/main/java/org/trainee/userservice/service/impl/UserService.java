@@ -1,6 +1,5 @@
 package org.trainee.userservice.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -28,10 +27,13 @@ public class UserService implements CrudOperations<UserRequestDto, UserResponseD
         Activatable,
         Filterable<UserResponseDto, UserFilter>
 {
-    @Autowired
-    private UserMapper mapper;
-    @Autowired
-    private UserRepository repository;
+    private final UserMapper mapper;
+    private final UserRepository repository;
+
+    public UserService(UserMapper mapper, UserRepository repository) {
+        this.mapper = mapper;
+        this.repository = repository;
+    }
 
     @Override
     public UserResponseDto create(UserRequestDto userDto) {

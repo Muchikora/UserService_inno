@@ -2,10 +2,10 @@ package org.trainee.userservice.service;
 
 import java.util.List;
 
-public interface CrudOperations<ReqDto, ResDto> {
-    ResDto create(ReqDto dto);
-    ResDto update(Integer id, ReqDto dto);
+public interface CrudOperations<Q, S> {
+    S create(Q dto);
+    S update(Integer id, Q dto);
     void delete(Integer id);
-    ResDto getById(Integer id);
-    List<ResDto> getAll();
+    S getById(Integer id);
+    List<S> getAll();
 }

@@ -2,7 +2,6 @@ package org.trainee.userservice.controller;
 
 import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -20,8 +19,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-    @Autowired
-    private UserService service;
+    private final UserService service;
+
+    public UserController(UserService service) {
+        this.service = service;
+    }
 
     @PostMapping()
     public ResponseEntity<UserResponseDto> create(@Valid @RequestBody UserRequestDto userDto) {

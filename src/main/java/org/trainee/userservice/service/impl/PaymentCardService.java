@@ -1,6 +1,5 @@
 package org.trainee.userservice.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -26,12 +25,17 @@ public class PaymentCardService implements CrudOperations<PaymentCardRequestDto,
         Activatable,
         Filterable<PaymentCardResponseDto, PaymentCardFilter>
 {
-    @Autowired
-    private PaymentCardMapper mapper;
-    @Autowired
-    private PaymentCardRepository cardRepository;
-    @Autowired
-    private UserRepository userRepository;
+    private final PaymentCardMapper mapper;
+    private final PaymentCardRepository cardRepository;
+    private final UserRepository userRepository;
+
+    public PaymentCardService(PaymentCardMapper mapper,
+                              PaymentCardRepository cardRepository,
+                              UserRepository userRepository) {
+        this.mapper = mapper;
+        this.cardRepository = cardRepository;
+        this.userRepository = userRepository;
+    }
 
     @Override
     public PaymentCardResponseDto create(PaymentCardRequestDto cardDto) {

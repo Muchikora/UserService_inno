@@ -5,6 +5,8 @@ import org.trainee.userservice.model.User;
 import org.trainee.userservice.specification.filter.UserFilter;
 
 public class UserSpecification {
+    private UserSpecification() {}
+
     public static Specification<User> name(String name) {
         return ((root, query, criteriaBuilder) ->
             criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%")

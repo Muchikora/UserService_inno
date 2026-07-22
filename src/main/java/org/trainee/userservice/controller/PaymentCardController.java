@@ -2,7 +2,6 @@ package org.trainee.userservice.controller;
 
 import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +17,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/cards")
 public class PaymentCardController {
-    @Autowired
-    private PaymentCardService service;
+    private final PaymentCardService service;
+
+    public PaymentCardController(PaymentCardService service) {
+        this.service = service;
+    }
 
     @PostMapping()
     public ResponseEntity<PaymentCardResponseDto> create(@Valid @RequestBody PaymentCardRequestDto cardDto) {

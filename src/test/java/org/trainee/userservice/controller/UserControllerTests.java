@@ -2,7 +2,6 @@ package org.trainee.userservice.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.trainee.userservice.dto.request.UserRequestDto;
@@ -10,6 +9,7 @@ import org.trainee.userservice.model.User;
 import org.trainee.userservice.repository.UserRepository;
 
 import java.time.LocalDate;
+import java.time.Month;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -19,12 +19,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-public class UserControllerTests extends BaseIntegrationTest {
-    @Autowired
-    private MockMvc mockMvc;
+class UserControllerTests extends BaseIntegrationTest {
+    private final MockMvc mockMvc;
+    private final UserRepository repository;
 
-    @Autowired
-    private UserRepository repository;
+    UserControllerTests(MockMvc mockMvc,
+                                      UserRepository repository) {
+        this.mockMvc = mockMvc;
+        this.repository = repository;
+    }
 
     @BeforeEach
     void cleanDatabase() {
@@ -37,7 +40,7 @@ public class UserControllerTests extends BaseIntegrationTest {
         request.setName("John");
         request.setSurname("Smith");
         request.setEmail("john@test.com");
-        request.setBirthDate(LocalDate.of(1995, 1, 1));
+        request.setBirthDate(LocalDate.of(1995, Month.JANUARY, 1));
 
         mockMvc.perform(
                 post("/api/users")
@@ -76,7 +79,7 @@ public class UserControllerTests extends BaseIntegrationTest {
         var second = new User();
         second.setName("Alex");
         second.setSurname("Brown");
-        second.setBirthDate(LocalDate.of(2000, 1, 1));
+        second.setBirthDate(LocalDate.of(2000, Month.JANUARY, 1));
         second.setEmail("alex@test.com");
         second.setActive(true);
         repository.save(second);
@@ -134,7 +137,7 @@ public class UserControllerTests extends BaseIntegrationTest {
         var user = new User();
         user.setName("John");
         user.setSurname("Smith");
-        user.setBirthDate(LocalDate.of(1995, 1, 1));
+        user.setBirthDate(LocalDate.of(1995, Month.JANUARY, 1));
         user.setEmail("john@test.com");
         user.setActive(true);
 
