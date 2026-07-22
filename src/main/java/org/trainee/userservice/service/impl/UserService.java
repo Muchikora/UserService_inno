@@ -1,6 +1,8 @@
 package org.trainee.userservice.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -39,6 +41,7 @@ public class UserService implements CrudOperations<UserRequestDto, UserResponseD
         return mapper.map(created);
     }
 
+    @CacheEvict(value = "users", key = "#id")
     @Override
     @Transactional
     public UserResponseDto update(Integer id, UserRequestDto userDto) {
@@ -47,6 +50,7 @@ public class UserService implements CrudOperations<UserRequestDto, UserResponseD
         return mapper.map(user);
     }
 
+    @CacheEvict(value = "users", key = "#id")
     @Override
     @Transactional
     public void delete(Integer id) {
@@ -57,6 +61,7 @@ public class UserService implements CrudOperations<UserRequestDto, UserResponseD
         repository.delete(user);
     }
 
+    @Cacheable(value = "users", key = "#id")
     @Override
     public UserResponseDto getById(Integer id) {
         var user = repository.findById(id).orElseThrow(() -> new RecordNotFoundException(id));
@@ -68,6 +73,7 @@ public class UserService implements CrudOperations<UserRequestDto, UserResponseD
         return mapper.map(repository.findAll());
     }
 
+    @CacheEvict(value = "users", key = "#id")
     @Override
     @Transactional
     public void activate(Integer id) {
@@ -75,6 +81,7 @@ public class UserService implements CrudOperations<UserRequestDto, UserResponseD
         repository.activate(id);
     }
 
+    @CacheEvict(value = "users", key = "#id")
     @Override
     @Transactional
     public void deactivate(Integer id) {
