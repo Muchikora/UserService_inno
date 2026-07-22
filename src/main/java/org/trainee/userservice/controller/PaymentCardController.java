@@ -21,7 +21,7 @@ public class PaymentCardController {
     @Autowired
     private PaymentCardService service;
 
-    @PostMapping("/payment-card")
+    @PostMapping()
     public ResponseEntity<PaymentCardResponseDto> create(@Valid @RequestBody PaymentCardRequestDto cardDto) {
         var response = service.create(cardDto);
         return ResponseEntity.created(URI.create("/api/cards/" + response.getId())).body(response);
@@ -68,7 +68,7 @@ public class PaymentCardController {
         return ResponseEntity.ok(service.getFiltered(filter, pageable));
     }
 
-    @GetMapping("/connected/{userId}")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<List<PaymentCardResponseDto>> getByUserId(@PathVariable Integer userId) {
         return ResponseEntity.ok(service.getByUserId(userId));
     }

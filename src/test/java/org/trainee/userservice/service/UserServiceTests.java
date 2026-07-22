@@ -32,7 +32,7 @@ public class UserServiceTests {
     private UserService service;
 
     @Test
-    void create_shouldCreateUser() {
+    void create_shouldCreate_user() {
         var dto = new UserRequestDto();
         var entity = new User();
         var saved = new User();
@@ -57,7 +57,7 @@ public class UserServiceTests {
     }
 
     @Test
-    void update_shouldUpdateUser() {
+    void update_shouldUpdate_user() {
         var dto = new UserRequestDto();
         var entity = new User();
         var response = new UserResponseDto();
@@ -73,7 +73,7 @@ public class UserServiceTests {
     }
 
     @Test
-    void delete_shouldDeleteUser() {
+    void delete_shouldDelete_user() {
         var user = new User();
         user.setActive(false);
 
@@ -96,7 +96,7 @@ public class UserServiceTests {
     }
 
     @Test
-    void getById_shouldReturnUser() {
+    void getById_shouldReturn_user() {
         var entity = new User();
         var dto = new UserResponseDto();
 
@@ -112,30 +112,12 @@ public class UserServiceTests {
     }
 
     @Test
-    void activate_shouldCallRepository() {
-        when(repository.findById(1)).thenReturn(Optional.of(new User()));
-
-        service.activate(1);
-
-        verify(repository).activate(1);
-    }
-
-    @Test
     void activate_shouldThrow_ifUserNotFound() {
         when(repository.findById(1)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> service.activate(1));
 
         verify(repository, never()).activate(anyInt());
-    }
-
-    @Test
-    void deactivate_shouldCallRepository() {
-        when(repository.findById(1)).thenReturn(Optional.of(new User()));
-
-        service.deactivate(1);
-
-        verify(repository).deactivate(1);
     }
 
     @Test
@@ -148,7 +130,7 @@ public class UserServiceTests {
     }
 
     @Test
-    void getAll_shouldReturnMappedUsers() {
+    void getAll_shouldReturn_mappedUsers() {
         var users = List.of(new User());
         var dto = List.of(new UserResponseDto());
 

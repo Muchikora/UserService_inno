@@ -36,7 +36,7 @@ public class PaymentCardServiceTests {
     private PaymentCardService service;
 
     @Test
-    void create_shouldCreateCard() {
+    void create_shouldCreate_card() {
         var dto = new PaymentCardRequestDto();
         dto.setUserId(1);
         var user = new User();
@@ -60,7 +60,7 @@ public class PaymentCardServiceTests {
     }
 
     @Test
-    void update_shouldUpdateCard() {
+    void update_shouldUpdate_card() {
         var dto = new PaymentCardRequestDto();
         var entity = new PaymentCard();
         var response = new PaymentCardResponseDto();
@@ -86,7 +86,7 @@ public class PaymentCardServiceTests {
     }
 
     @Test
-    void delete_shouldDeleteInactiveCard() {
+    void delete_shouldDelete_inactiveCard() {
         var card = new PaymentCard();
         card.setActive(false);
 
@@ -131,7 +131,7 @@ public class PaymentCardServiceTests {
     }
 
     @Test
-    void getByUserId_shouldReturnCards() {
+    void getByUserId_shouldReturn_cards() {
         var cards = List.of(new PaymentCard());
         var dto = List.of(new PaymentCardResponseDto());
 
