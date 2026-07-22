@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.trainee.userservice.dto.request.UserRequestDto;
 import org.trainee.userservice.dto.response.UserResponseDto;
+import org.trainee.userservice.exception.EmailAlreadyExistsException;
 import org.trainee.userservice.exception.RecordNotFoundException;
 import org.trainee.userservice.exception.RecordStillActiveException;
 import org.trainee.userservice.mapper.UserMapper;
@@ -37,6 +38,9 @@ public class UserService implements CrudOperations<UserRequestDto, UserResponseD
 
     @Override
     public UserResponseDto create(UserRequestDto userDto) {
+        if (repository.existsByEmail(userDto.getEmail()))
+            throw new EmailAlreadyExistsException(userDto.getEmail());
+
         var user = mapper.map(userDto);
         user.setActive(true);
         var created = repository.save(user);
@@ -47,6 +51,9 @@ public class UserService implements CrudOperations<UserRequestDto, UserResponseD
     @Override
     @Transactional
     public UserResponseDto update(Integer id, UserRequestDto userDto) {
+        if (repository.existsByEmail(userDto.getEmail()))
+            throw new EmailAlreadyExistsException(userDto.getEmail());
+
         var user = repository.findById(id).orElseThrow(() -> new RecordNotFoundException(id));
         mapper.updateEntityFromDto(userDto, user);
         return mapper.map(user);

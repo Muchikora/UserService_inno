@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.trainee.userservice.dto.request.PaymentCardRequestDto;
 import org.trainee.userservice.dto.response.PaymentCardResponseDto;
+import org.trainee.userservice.exception.NoMoreCardsAllowed;
 import org.trainee.userservice.exception.RecordNotFoundException;
 import org.trainee.userservice.exception.RecordStillActiveException;
 import org.trainee.userservice.mapper.PaymentCardMapper;
@@ -40,6 +41,8 @@ public class PaymentCardService implements CrudOperations<PaymentCardRequestDto,
     @Override
     public PaymentCardResponseDto create(PaymentCardRequestDto cardDto) {
         var user = userRepository.findById(cardDto.getUserId()).orElseThrow(() -> new RecordNotFoundException(cardDto.getUserId()));
+        if (user.getPaymentCards().size() == 5)
+            throw new NoMoreCardsAllowed();
         var card = mapper.map(cardDto);
         card.setActive(true);
         card.setUser(user);

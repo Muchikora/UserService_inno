@@ -21,4 +21,6 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
 
     @Query(value = "SELECT * FROM users WHERE created_at > :date", nativeQuery = true)
     List<User> findAllByCreatedAtAfter(@Param("date") LocalDateTime date);
+
+    Boolean existsByEmail(String email);
 }
