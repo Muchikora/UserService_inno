@@ -27,6 +27,6 @@ public class User extends BaseEntity {
     @Column(name = "email", length = 64, nullable = false, unique = true)
     private String email;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PaymentCard> paymentCards;
 }
