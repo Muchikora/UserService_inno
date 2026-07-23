@@ -14,9 +14,7 @@ import org.trainee.userservice.exception.RecordNotFoundException;
 import org.trainee.userservice.exception.RecordStillActiveException;
 import org.trainee.userservice.mapper.UserMapper;
 import org.trainee.userservice.repository.UserRepository;
-import org.trainee.userservice.service.Activatable;
-import org.trainee.userservice.service.CrudOperations;
-import org.trainee.userservice.service.Filterable;
+import org.trainee.userservice.service.*;
 import org.trainee.userservice.specification.UserSpecification;
 import org.trainee.userservice.specification.filter.UserFilter;
 
@@ -25,8 +23,8 @@ import java.util.List;
 
 @Service
 public class UserService implements CrudOperations<UserRequestDto, UserResponseDto>,
-        Activatable,
-        Filterable<UserResponseDto, UserFilter>
+        ActivationOperations,
+        FilterOperations<UserResponseDto, UserFilter>
 {
     private final UserMapper mapper;
     private final UserRepository repository;

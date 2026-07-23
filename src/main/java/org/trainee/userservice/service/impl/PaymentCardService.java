@@ -13,9 +13,7 @@ import org.trainee.userservice.exception.RecordStillActiveException;
 import org.trainee.userservice.mapper.PaymentCardMapper;
 import org.trainee.userservice.repository.PaymentCardRepository;
 import org.trainee.userservice.repository.UserRepository;
-import org.trainee.userservice.service.Activatable;
-import org.trainee.userservice.service.CrudOperations;
-import org.trainee.userservice.service.Filterable;
+import org.trainee.userservice.service.*;
 import org.trainee.userservice.specification.PaymentCardSpecification;
 import org.trainee.userservice.specification.filter.PaymentCardFilter;
 
@@ -23,8 +21,8 @@ import java.util.List;
 
 @Service
 public class PaymentCardService implements CrudOperations<PaymentCardRequestDto, PaymentCardResponseDto>,
-        Activatable,
-        Filterable<PaymentCardResponseDto, PaymentCardFilter>
+        ActivationOperations,
+        FilterOperations<PaymentCardResponseDto, PaymentCardFilter>
 {
     private final PaymentCardMapper mapper;
     private final PaymentCardRepository cardRepository;
@@ -40,9 +38,10 @@ public class PaymentCardService implements CrudOperations<PaymentCardRequestDto,
 
     @Override
     public PaymentCardResponseDto create(PaymentCardRequestDto cardDto) {
-        var user = userRepository.findById(cardDto.getUserId()).orElseThrow(() -> new RecordNotFoundException(cardDto.getUserId()));
-        if (user.getPaymentCards() != null && user.getPaymentCards().size() == 5)
+        if (cardRepository.countByUserId(cardDto.getUserId()) >= 5)
             throw new NoMoreCardsAllowed();
+
+        var user = userRepository.findById(cardDto.getUserId()).orElseThrow(() -> new RecordNotFoundException(cardDto.getUserId()));
         var card = mapper.map(cardDto);
         card.setActive(true);
         card.setUser(user);

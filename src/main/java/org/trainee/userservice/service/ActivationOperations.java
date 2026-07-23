@@ -1,6 +1,6 @@
 package org.trainee.userservice.service;
 
-public interface Activatable {
+public interface ActivationOperations {
     void activate(Integer id);
     void deactivate(Integer id);
 }

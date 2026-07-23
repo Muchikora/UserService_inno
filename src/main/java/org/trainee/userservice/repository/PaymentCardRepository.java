@@ -19,4 +19,7 @@ public interface PaymentCardRepository extends JpaRepository<PaymentCard, Intege
     @Modifying
     @Query("UPDATE PaymentCard u SET u.active = false WHERE u.id = :id")
     void deactivate(@Param("id") Integer id);
+
+    @Query("SELECT COUNT(c) FROM PaymentCard c WHERE c.user.id = :userId")
+    long countByUserId(Integer userId);
 }
