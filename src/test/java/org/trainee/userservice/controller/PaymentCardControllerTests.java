@@ -36,7 +36,7 @@ class PaymentCardControllerTests extends BaseIntegrationTest {
     }
 
     @Test
-    void createCard_shouldSave_card() throws Exception {
+    void create_shouldSave_card() throws Exception {
         var user = createUser();
 
         mockMvc.perform(
@@ -130,6 +130,28 @@ class PaymentCardControllerTests extends BaseIntegrationTest {
                 ).andExpect(status().isNotFound());
     }
 
+    @Test
+    void getByUserId_shouldReturnEmptyList_whenUserHasNoCards() throws Exception {
+        var user = createUser();
+
+        userRepository.save(user);
+
+        mockMvc.perform(get("/api/cards/user/{id}", user.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+    }
+
+    @Test
+    void delete_shouldReturn400_whenCardIsActive() throws Exception {
+        var user = createUser();
+        var card = createActiveCard(user);
+
+        cardRepository.save(card);
+
+        mockMvc.perform(delete("/api/cards/{id}", card.getId()))
+                .andExpect(status().isBadRequest());
+    }
+
     private User createUser() {
         var user = new User();
         user.setName("John");
@@ -142,6 +164,16 @@ class PaymentCardControllerTests extends BaseIntegrationTest {
     }
 
     private PaymentCard createInactiveCard(User user) {
+        return cardRepository.save(createCard(user));
+    }
+
+    private PaymentCard createActiveCard(User user) {
+        var card = createCard(user);
+        card.setActive(true);
+        return cardRepository.save(card);
+    }
+
+    private PaymentCard createCard(User user) {
         var card = new PaymentCard();
         card.setNumber("1234567890123456");
         card.setHolder("JOHN SMITH");
@@ -149,6 +181,6 @@ class PaymentCardControllerTests extends BaseIntegrationTest {
         card.setActive(false);
         card.setUser(user);
 
-        return cardRepository.save(card);
+        return card;
     }
 }

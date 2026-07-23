@@ -111,17 +111,19 @@ class UserControllerTests extends BaseIntegrationTest {
     }
 
     @Test
-    void delete_shouldntRemove_activeUser() throws Exception {
+    void delete_shouldFail_ifActiveUser() throws Exception {
         var user = createUser();
 
-        mockMvc.perform(delete("/api/users/" + user.getId())).andExpect(status().isBadRequest());
+        mockMvc.perform(delete("/api/users/" + user.getId()))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    void delete_shouldRemove_inactiveUser() throws Exception {
+    void delete_shouldRemove_ifInactiveUser() throws Exception {
         var user = createInactiveUser();
 
-        mockMvc.perform(delete("/api/users/" + user.getId())).andExpect(status().isNoContent());
+        mockMvc.perform(delete("/api/users/" + user.getId()))
+                .andExpect(status().isNoContent());
 
         assertFalse(repository.existsById(user.getId()));
     }
@@ -129,6 +131,27 @@ class UserControllerTests extends BaseIntegrationTest {
     @Test
     void getById_shouldReturn404_whenUserNotFound() throws Exception {
         mockMvc.perform(get("/api/users/999")).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void create_shouldReturn400_whenEmailAlreadyExists() throws Exception {
+        var user = createUser();
+
+        repository.save(user);
+
+        var request = """
+        {
+          "name":"Jane",
+          "surname":"Doe",
+          "email":"john@test.com",
+          "birthDate":"2001-01-01"
+        }
+        """;
+
+        mockMvc.perform(post("/api/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(request))
+                .andExpect(status().isBadRequest());
     }
 
     private User createUser() {
