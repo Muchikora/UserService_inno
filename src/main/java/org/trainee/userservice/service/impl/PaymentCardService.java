@@ -41,7 +41,7 @@ public class PaymentCardService implements CrudOperations<PaymentCardRequestDto,
     @Override
     public PaymentCardResponseDto create(PaymentCardRequestDto cardDto) {
         var user = userRepository.findById(cardDto.getUserId()).orElseThrow(() -> new RecordNotFoundException(cardDto.getUserId()));
-        if (user.getPaymentCards().size() == 5)
+        if (user.getPaymentCards() != null && user.getPaymentCards().size() == 5)
             throw new NoMoreCardsAllowed();
         var card = mapper.map(cardDto);
         card.setActive(true);
