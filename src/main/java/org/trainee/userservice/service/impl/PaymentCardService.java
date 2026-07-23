@@ -1,0 +1,101 @@
+package org.trainee.userservice.service.impl;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.trainee.userservice.dto.request.PaymentCardRequestDto;
+import org.trainee.userservice.dto.response.PaymentCardResponseDto;
+import org.trainee.userservice.exception.NoMoreCardsAllowed;
+import org.trainee.userservice.exception.RecordNotFoundException;
+import org.trainee.userservice.exception.RecordStillActiveException;
+import org.trainee.userservice.mapper.PaymentCardMapper;
+import org.trainee.userservice.repository.PaymentCardRepository;
+import org.trainee.userservice.repository.UserRepository;
+import org.trainee.userservice.service.*;
+import org.trainee.userservice.specification.PaymentCardSpecification;
+import org.trainee.userservice.specification.filter.PaymentCardFilter;
+
+import java.util.List;
+
+@RequiredArgsConstructor
+@Service
+public class PaymentCardService implements CrudOperations<PaymentCardRequestDto, PaymentCardResponseDto>,
+        ActivationOperations,
+        FilterOperations<PaymentCardResponseDto, PaymentCardFilter>
+{
+    private final PaymentCardMapper mapper;
+    private final PaymentCardRepository cardRepository;
+    private final UserRepository userRepository;
+
+    @Override
+    public PaymentCardResponseDto create(PaymentCardRequestDto cardDto) {
+        if (cardRepository.countByUserId(cardDto.getUserId()) >= 5)
+            throw new NoMoreCardsAllowed();
+
+        var user = userRepository.findById(cardDto.getUserId()).orElseThrow(() -> new RecordNotFoundException(cardDto.getUserId()));
+        var card = mapper.map(cardDto);
+        card.setActive(true);
+        card.setUser(user);
+        var created = cardRepository.save(card);
+        return mapper.map(created);
+    }
+
+    @Override
+    @Transactional
+    public PaymentCardResponseDto update(Long id, PaymentCardRequestDto cardDto) {
+        var card = cardRepository.findById(id).orElseThrow(() -> new RecordNotFoundException(id));
+        mapper.updateEntityFromDto(cardDto, card);
+        return mapper.map(card);
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        var card = cardRepository.findById(id).orElseThrow(() -> new RecordNotFoundException(id));
+        if (card.getActive())
+            throw new RecordStillActiveException(id);
+
+        cardRepository.delete(card);
+    }
+
+    @Override
+    public PaymentCardResponseDto getById(Long id) {
+        var card = cardRepository.findById(id).orElseThrow(() -> new RecordNotFoundException(id));
+        return mapper.map(card);
+    }
+
+    @Override
+    public List<PaymentCardResponseDto> getAll() {
+        var cards = cardRepository.findAll();
+        return mapper.map(cards);
+    }
+
+    @Override
+    @Transactional
+    public void activate(Long id) {
+        cardRepository.findById(id).orElseThrow(() -> new RecordNotFoundException(id));
+        cardRepository.activate(id);
+    }
+
+    @Override
+    @Transactional
+    public void deactivate(Long id) {
+        cardRepository.findById(id).orElseThrow(() -> new RecordNotFoundException(id));
+        cardRepository.deactivate(id);
+    }
+
+    @Override
+    public Page<PaymentCardResponseDto> getFiltered(PaymentCardFilter filter, Pageable pageable) {
+        var spec = Specification.where(PaymentCardSpecification.byFilter(filter));
+        var page = cardRepository.findAll(spec, pageable);
+        return page.map(mapper::map);
+    }
+
+    public List<PaymentCardResponseDto> getByUserId(Long userId) {
+        var card = cardRepository.findByUserId(userId);
+        return mapper.map(card);
+    }
+}
