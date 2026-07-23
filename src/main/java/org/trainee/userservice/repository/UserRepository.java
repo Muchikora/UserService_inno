@@ -10,14 +10,14 @@ import org.trainee.userservice.model.User;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecificationExecutor<User> {
+public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
     @Modifying
     @Query("UPDATE User u SET u.active = true WHERE u.id = :id")
-    void activate(@Param("id") Integer id);
+    void activate(@Param("id") Long id);
 
     @Modifying
     @Query("UPDATE User u SET u.active = false WHERE u.id = :id")
-    void deactivate(@Param("id") Integer id);
+    void deactivate(@Param("id") Long id);
 
     @Query(value = "SELECT * FROM users WHERE created_at > :date", nativeQuery = true)
     List<User> findAllByCreatedAtAfter(@Param("date") LocalDateTime date);

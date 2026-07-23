@@ -1,5 +1,6 @@
 package org.trainee.userservice.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,7 @@ import org.trainee.userservice.specification.filter.UserFilter;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class UserService implements CrudOperations<UserRequestDto, UserResponseDto>,
         ActivationOperations,
@@ -28,11 +30,6 @@ public class UserService implements CrudOperations<UserRequestDto, UserResponseD
 {
     private final UserMapper mapper;
     private final UserRepository repository;
-
-    public UserService(UserMapper mapper, UserRepository repository) {
-        this.mapper = mapper;
-        this.repository = repository;
-    }
 
     @Override
     public UserResponseDto create(UserRequestDto userDto) {
@@ -48,7 +45,7 @@ public class UserService implements CrudOperations<UserRequestDto, UserResponseD
     @CacheEvict(value = "users", key = "#id")
     @Override
     @Transactional
-    public UserResponseDto update(Integer id, UserRequestDto userDto) {
+    public UserResponseDto update(Long id, UserRequestDto userDto) {
         if (repository.existsByEmail(userDto.getEmail()))
             throw new EmailAlreadyExistsException(userDto.getEmail());
 
@@ -60,7 +57,7 @@ public class UserService implements CrudOperations<UserRequestDto, UserResponseD
     @CacheEvict(value = "users", key = "#id")
     @Override
     @Transactional
-    public void delete(Integer id) {
+    public void delete(Long id) {
         var user = repository.findById(id).orElseThrow(() -> new RecordNotFoundException(id));
         if (user.getActive())
             throw new RecordStillActiveException(id);
@@ -70,7 +67,7 @@ public class UserService implements CrudOperations<UserRequestDto, UserResponseD
 
     @Cacheable(value = "users", key = "#id")
     @Override
-    public UserResponseDto getById(Integer id) {
+    public UserResponseDto getById(Long id) {
         var user = repository.findById(id).orElseThrow(() -> new RecordNotFoundException(id));
         return mapper.map(user);
     }
@@ -83,7 +80,7 @@ public class UserService implements CrudOperations<UserRequestDto, UserResponseD
     @CacheEvict(value = "users", key = "#id")
     @Override
     @Transactional
-    public void activate(Integer id) {
+    public void activate(Long id) {
         repository.findById(id).orElseThrow(() -> new RecordNotFoundException(id));
         repository.activate(id);
     }
@@ -91,7 +88,7 @@ public class UserService implements CrudOperations<UserRequestDto, UserResponseD
     @CacheEvict(value = "users", key = "#id")
     @Override
     @Transactional
-    public void deactivate(Integer id) {
+    public void deactivate(Long id) {
         repository.findById(id).orElseThrow(() -> new RecordNotFoundException(id));
         repository.deactivate(id);
     }

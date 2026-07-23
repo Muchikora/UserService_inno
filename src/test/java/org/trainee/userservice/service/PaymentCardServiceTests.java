@@ -38,14 +38,14 @@ class PaymentCardServiceTests {
     @Test
     void create_shouldCreate_card() {
         var dto = new PaymentCardRequestDto();
-        dto.setUserId(1);
+        dto.setUserId(1L);
         var user = new User();
         var entity = new PaymentCard();
         var saved = new PaymentCard();
-        saved.setId(10);
+        saved.setId(10L);
         var response = new PaymentCardResponseDto();
 
-        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(mapper.map(dto)).thenReturn(entity);
         when(cardRepository.save(entity)).thenReturn(saved);
         when(mapper.map(saved)).thenReturn(response);
@@ -65,10 +65,10 @@ class PaymentCardServiceTests {
         var entity = new PaymentCard();
         var response = new PaymentCardResponseDto();
 
-        when(cardRepository.findById(1)).thenReturn(Optional.of(entity));
+        when(cardRepository.findById(1L)).thenReturn(Optional.of(entity));
         when(mapper.map(entity)).thenReturn(response);
 
-        var result = service.update(1, dto);
+        var result = service.update(1L, dto);
 
         assertEquals(response, result);
 
@@ -78,10 +78,10 @@ class PaymentCardServiceTests {
 
     @Test
     void update_shouldThrow_ifCardNotFound() {
-        when(cardRepository.findById(1)).thenReturn(Optional.empty());
+        when(cardRepository.findById(1L)).thenReturn(Optional.empty());
         PaymentCardRequestDto dto = new PaymentCardRequestDto();
 
-        assertThrows(RecordNotFoundException.class, () -> service.update(1, dto));
+        assertThrows(RecordNotFoundException.class, () -> service.update(1L, dto));
 
         verify(mapper, never()).updateEntityFromDto(any(), any());
     }
@@ -91,9 +91,9 @@ class PaymentCardServiceTests {
         var card = new PaymentCard();
         card.setActive(false);
 
-        when(cardRepository.findById(1)).thenReturn(Optional.of(card));
+        when(cardRepository.findById(1L)).thenReturn(Optional.of(card));
 
-        service.delete(1);
+        service.delete(1L);
 
         verify(cardRepository).delete(card);
     }
@@ -103,18 +103,18 @@ class PaymentCardServiceTests {
         var card = new PaymentCard();
         card.setActive(true);
 
-        when(cardRepository.findById(1)).thenReturn(Optional.of(card));
+        when(cardRepository.findById(1L)).thenReturn(Optional.of(card));
 
-        assertThrows(RecordStillActiveException.class, () -> service.delete(1));
+        assertThrows(RecordStillActiveException.class, () -> service.delete(1L));
 
         verify(cardRepository, never()).delete((PaymentCard) any());
     }
 
     @Test
     void delete_shouldThrow_ifCardNotFound() {
-        when(cardRepository.findById(1)).thenReturn(Optional.empty());
+        when(cardRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(RecordNotFoundException.class, () -> service.delete(1));
+        assertThrows(RecordNotFoundException.class, () -> service.delete(1L));
 
         verify(cardRepository, never()).delete((PaymentCard) any());
     }
@@ -122,9 +122,9 @@ class PaymentCardServiceTests {
     @Test
     void create_shouldThrow_ifUserNotFound() {
         var dto = new PaymentCardRequestDto();
-        dto.setUserId(5);
+        dto.setUserId(5L);
 
-        when(userRepository.findById(5)).thenReturn(Optional.empty());
+        when(userRepository.findById(5L)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> service.create(dto));
 
@@ -136,14 +136,14 @@ class PaymentCardServiceTests {
         var cards = List.of(new PaymentCard());
         var dto = List.of(new PaymentCardResponseDto());
 
-        when(cardRepository.findByUserId(1)).thenReturn(cards);
+        when(cardRepository.findByUserId(1L)).thenReturn(cards);
         when(mapper.map(cards)).thenReturn(dto);
 
-        var result = service.getByUserId(1);
+        var result = service.getByUserId(1L);
 
         assertEquals(dto, result);
 
-        verify(cardRepository).findByUserId(1);
+        verify(cardRepository).findByUserId(1L);
         verify(mapper).map(cards);
     }
 }

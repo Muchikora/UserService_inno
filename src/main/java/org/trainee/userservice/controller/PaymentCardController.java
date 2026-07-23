@@ -30,20 +30,20 @@ public class PaymentCardController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PaymentCardResponseDto> update(@PathVariable Integer id,
+    public ResponseEntity<PaymentCardResponseDto> update(@PathVariable Long id,
                                                          @Valid @RequestBody PaymentCardRequestDto cardDto) {
         var response = service.update(id, cardDto);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PaymentCardResponseDto> getById(@PathVariable Integer id) {
+    public ResponseEntity<PaymentCardResponseDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.getById(id));
     }
 
@@ -53,13 +53,13 @@ public class PaymentCardController {
     }
 
     @PutMapping("/{id}/activate")
-    public ResponseEntity<Void> activate(@PathVariable Integer id) {
+    public ResponseEntity<Void> activate(@PathVariable Long id) {
         service.activate(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}/deactivate")
-    public ResponseEntity<Void> deactivate(@PathVariable Integer id) {
+    public ResponseEntity<Void> deactivate(@PathVariable Long id) {
         service.deactivate(id);
         return ResponseEntity.noContent().build();
     }
@@ -71,7 +71,7 @@ public class PaymentCardController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<PaymentCardResponseDto>> getByUserId(@PathVariable Integer userId) {
+    public ResponseEntity<List<PaymentCardResponseDto>> getByUserId(@PathVariable Long userId) {
         return ResponseEntity.ok(service.getByUserId(userId));
     }
 }

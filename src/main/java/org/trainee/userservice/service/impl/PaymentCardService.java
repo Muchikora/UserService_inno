@@ -1,5 +1,6 @@
 package org.trainee.userservice.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -19,6 +20,7 @@ import org.trainee.userservice.specification.filter.PaymentCardFilter;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class PaymentCardService implements CrudOperations<PaymentCardRequestDto, PaymentCardResponseDto>,
         ActivationOperations,
@@ -27,14 +29,6 @@ public class PaymentCardService implements CrudOperations<PaymentCardRequestDto,
     private final PaymentCardMapper mapper;
     private final PaymentCardRepository cardRepository;
     private final UserRepository userRepository;
-
-    public PaymentCardService(PaymentCardMapper mapper,
-                              PaymentCardRepository cardRepository,
-                              UserRepository userRepository) {
-        this.mapper = mapper;
-        this.cardRepository = cardRepository;
-        this.userRepository = userRepository;
-    }
 
     @Override
     public PaymentCardResponseDto create(PaymentCardRequestDto cardDto) {
@@ -51,7 +45,7 @@ public class PaymentCardService implements CrudOperations<PaymentCardRequestDto,
 
     @Override
     @Transactional
-    public PaymentCardResponseDto update(Integer id, PaymentCardRequestDto cardDto) {
+    public PaymentCardResponseDto update(Long id, PaymentCardRequestDto cardDto) {
         var card = cardRepository.findById(id).orElseThrow(() -> new RecordNotFoundException(id));
         mapper.updateEntityFromDto(cardDto, card);
         return mapper.map(card);
@@ -59,7 +53,7 @@ public class PaymentCardService implements CrudOperations<PaymentCardRequestDto,
 
     @Override
     @Transactional
-    public void delete(Integer id) {
+    public void delete(Long id) {
         var card = cardRepository.findById(id).orElseThrow(() -> new RecordNotFoundException(id));
         if (card.getActive())
             throw new RecordStillActiveException(id);
@@ -68,7 +62,7 @@ public class PaymentCardService implements CrudOperations<PaymentCardRequestDto,
     }
 
     @Override
-    public PaymentCardResponseDto getById(Integer id) {
+    public PaymentCardResponseDto getById(Long id) {
         var card = cardRepository.findById(id).orElseThrow(() -> new RecordNotFoundException(id));
         return mapper.map(card);
     }
@@ -81,14 +75,14 @@ public class PaymentCardService implements CrudOperations<PaymentCardRequestDto,
 
     @Override
     @Transactional
-    public void activate(Integer id) {
+    public void activate(Long id) {
         cardRepository.findById(id).orElseThrow(() -> new RecordNotFoundException(id));
         cardRepository.activate(id);
     }
 
     @Override
     @Transactional
-    public void deactivate(Integer id) {
+    public void deactivate(Long id) {
         cardRepository.findById(id).orElseThrow(() -> new RecordNotFoundException(id));
         cardRepository.deactivate(id);
     }
@@ -100,7 +94,7 @@ public class PaymentCardService implements CrudOperations<PaymentCardRequestDto,
         return page.map(mapper::map);
     }
 
-    public List<PaymentCardResponseDto> getByUserId(Integer userId) {
+    public List<PaymentCardResponseDto> getByUserId(Long userId) {
         var card = cardRepository.findByUserId(userId);
         return mapper.map(card);
     }

@@ -4,8 +4,8 @@ import java.util.List;
 
 public interface CrudOperations<Q, S> {
     S create(Q dto);
-    S update(Integer id, Q dto);
-    void delete(Integer id);
-    S getById(Integer id);
+    S update(Long id, Q dto);
+    void delete(Long id);
+    S getById(Long id);
     List<S> getAll();
 }

@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.trainee.userservice.dto.request.UserRequestDto;
 import org.trainee.userservice.dto.response.UserResponseDto;
+import org.trainee.userservice.exception.EmailAlreadyExistsException;
 import org.trainee.userservice.exception.RecordNotFoundException;
 import org.trainee.userservice.exception.RecordStillActiveException;
 import org.trainee.userservice.mapper.UserMapper;
@@ -36,10 +37,10 @@ class UserServiceTests {
         var dto = new UserRequestDto();
         var entity = new User();
         var saved = new User();
-        saved.setId(1);
+        saved.setId(1L);
 
         var response = new UserResponseDto();
-        response.setId(1);
+        response.setId(1L);
 
         when(mapper.map(dto)).thenReturn(entity);
         when(repository.save(entity)).thenReturn(saved);
@@ -48,7 +49,7 @@ class UserServiceTests {
         var result = service.create(dto);
 
         assertNotNull(result);
-        assertEquals(1, result.getId());
+        assertEquals(1L, result.getId());
         assertTrue(entity.getActive());
 
         verify(mapper).map(dto);
@@ -62,10 +63,10 @@ class UserServiceTests {
         var entity = new User();
         var response = new UserResponseDto();
 
-        when(repository.findById(1)).thenReturn(Optional.of(entity));
+        when(repository.findById(1L)).thenReturn(Optional.of(entity));
         when(mapper.map(entity)).thenReturn(response);
 
-        var result = service.update(1, dto);
+        var result = service.update(1L, dto);
 
         assertEquals(response, result);
 
@@ -77,8 +78,8 @@ class UserServiceTests {
         var user = new User();
         user.setActive(false);
 
-        when(repository.findById(1)).thenReturn(Optional.of(user));
-        service.delete(1);
+        when(repository.findById(1L)).thenReturn(Optional.of(user));
+        service.delete(1L);
 
         verify(repository).delete(user);
     }
@@ -88,9 +89,9 @@ class UserServiceTests {
         var user = new User();
         user.setActive(true);
 
-        when(repository.findById(1)).thenReturn(Optional.of(user));
+        when(repository.findById(1L)).thenReturn(Optional.of(user));
 
-        assertThrows(RecordStillActiveException.class, () -> service.delete(1));
+        assertThrows(RecordStillActiveException.class, () -> service.delete(1L));
 
         verify(repository, never()).delete((User) any());
     }
@@ -100,33 +101,33 @@ class UserServiceTests {
         var entity = new User();
         var dto = new UserResponseDto();
 
-        when(repository.findById(1)).thenReturn(Optional.of(entity));
+        when(repository.findById(1L)).thenReturn(Optional.of(entity));
         when(mapper.map(entity)).thenReturn(dto);
 
-        var result = service.getById(1);
+        var result = service.getById(1L);
 
         assertEquals(dto, result);
 
-        verify(repository).findById(1);
+        verify(repository).findById(1L);
         verify(mapper).map(entity);
     }
 
     @Test
     void activate_shouldThrow_ifUserNotFound() {
-        when(repository.findById(1)).thenReturn(Optional.empty());
+        when(repository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(RecordNotFoundException.class, () -> service.activate(1));
+        assertThrows(RecordNotFoundException.class, () -> service.activate(1L));
 
-        verify(repository, never()).activate(anyInt());
+        verify(repository, never()).activate(anyLong());
     }
 
     @Test
     void deactivate_shouldThrow_ifUserNotFound() {
-        when(repository.findById(1)).thenReturn(Optional.empty());
+        when(repository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(RecordNotFoundException.class, () -> service.deactivate(1));
+        assertThrows(RecordNotFoundException.class, () -> service.deactivate(1L));
 
-        verify(repository, never()).deactivate(anyInt());
+        verify(repository, never()).deactivate(anyLong());
     }
 
     @Test
@@ -139,5 +140,18 @@ class UserServiceTests {
         when(mapper.map(users)).thenReturn(dto);
 
         assertEquals(dto, service.getAll());
+    }
+
+    @Test
+    void create_shouldThrow_ifEmailAlreadyExists() {
+        var dto = new UserRequestDto();
+        dto.setEmail("test@test.com");
+
+        when(repository.existsByEmail(dto.getEmail())).thenReturn(true);
+
+        assertThrows(EmailAlreadyExistsException.class,() -> service.create(dto));
+
+        verify(repository, never()).save(any());
+        verify(mapper, never()).map((User) any());
     }
 }

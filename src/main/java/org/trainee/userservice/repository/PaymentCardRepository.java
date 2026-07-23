@@ -9,17 +9,17 @@ import org.trainee.userservice.model.PaymentCard;
 
 import java.util.List;
 
-public interface PaymentCardRepository extends JpaRepository<PaymentCard, Integer>, JpaSpecificationExecutor<PaymentCard> {
-    List<PaymentCard> findByUserId(Integer userId);
+public interface PaymentCardRepository extends JpaRepository<PaymentCard, Long>, JpaSpecificationExecutor<PaymentCard> {
+    List<PaymentCard> findByUserId(Long userId);
 
     @Modifying
     @Query("UPDATE PaymentCard u SET u.active = true WHERE u.id = :id")
-    void activate(@Param("id") Integer id);
+    void activate(@Param("id") Long id);
 
     @Modifying
     @Query("UPDATE PaymentCard u SET u.active = false WHERE u.id = :id")
-    void deactivate(@Param("id") Integer id);
+    void deactivate(@Param("id") Long id);
 
     @Query("SELECT COUNT(c) FROM PaymentCard c WHERE c.user.id = :userId")
-    long countByUserId(Integer userId);
+    long countByUserId(Long userId);
 }

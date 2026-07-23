@@ -32,20 +32,20 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDto> update(@PathVariable Integer id,
+    public ResponseEntity<UserResponseDto> update(@PathVariable Long id,
                                                   @Valid @RequestBody UserRequestDto userDto) {
         var response = service.update(id, userDto);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDto> getById(@PathVariable Integer id) {
+    public ResponseEntity<UserResponseDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.getById(id));
     }
 
@@ -55,13 +55,13 @@ public class UserController {
     }
 
     @PutMapping("/{id}/activate")
-    public ResponseEntity<Void> activate(@PathVariable Integer id) {
+    public ResponseEntity<Void> activate(@PathVariable Long id) {
         service.activate(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}/deactivate")
-    public ResponseEntity<Void> deactivate(@PathVariable Integer id) {
+    public ResponseEntity<Void> deactivate(@PathVariable Long id) {
         service.deactivate(id);
         return ResponseEntity.noContent().build();
     }

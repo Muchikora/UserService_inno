@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaymentCardRequestDto {
-    private Integer userId;
+    private Long userId;
     private String number;
     private String holder;
     private LocalDate expirationDate;
