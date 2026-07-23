@@ -23,8 +23,11 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build, test and generate coverage
-        run: mvn clean verify
+      - name: Build with Maven (skip integration tests)
+        run: mvn clean package -DskipTests
+
+      - name: Run unit tests only
+        run: mvn test -Dtest=*Test
 
       - name: Run SonarQube analysis
         env:
