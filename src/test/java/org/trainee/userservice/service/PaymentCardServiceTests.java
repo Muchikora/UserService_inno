@@ -79,8 +79,9 @@ class PaymentCardServiceTests {
     @Test
     void update_shouldThrow_ifCardNotFound() {
         when(cardRepository.findById(1)).thenReturn(Optional.empty());
+        PaymentCardRequestDto dto = new PaymentCardRequestDto();
 
-        assertThrows(RecordNotFoundException.class, () -> service.update(1, new PaymentCardRequestDto()));
+        assertThrows(RecordNotFoundException.class, () -> service.update(1, dto));
 
         verify(mapper, never()).updateEntityFromDto(any(), any());
     }
