@@ -2,6 +2,7 @@ package org.trainee.userservice.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.trainee.userservice.dto.request.UserRequestDto;
@@ -20,14 +21,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class UserControllerTests extends BaseIntegrationTest {
-    private final MockMvc mockMvc;
-    private final UserRepository repository;
+    @Autowired
+    private MockMvc mockMvc;
 
-    UserControllerTests(MockMvc mockMvc,
-                                      UserRepository repository) {
-        this.mockMvc = mockMvc;
-        this.repository = repository;
-    }
+    @Autowired
+    private UserRepository repository;
 
     @BeforeEach
     void cleanDatabase() {

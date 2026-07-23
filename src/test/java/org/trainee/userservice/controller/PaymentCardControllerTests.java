@@ -2,6 +2,7 @@ package org.trainee.userservice.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.trainee.userservice.model.PaymentCard;
@@ -21,17 +22,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class PaymentCardControllerTests extends BaseIntegrationTest {
-    private final MockMvc mockMvc;
-    private final UserRepository userRepository;
-    private final PaymentCardRepository cardRepository;
-
-    PaymentCardControllerTests(MockMvc mockMvc,
-                                      UserRepository userRepository,
-                                      PaymentCardRepository cardRepository) {
-        this.mockMvc = mockMvc;
-        this.userRepository = userRepository;
-        this.cardRepository = cardRepository;
-    }
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private PaymentCardRepository cardRepository;
 
     @BeforeEach
     void cleanDatabase() {
@@ -121,7 +117,7 @@ class PaymentCardControllerTests extends BaseIntegrationTest {
     @Test
     void create_shouldFail_whenUserNotFound() throws Exception {
         mockMvc.perform(
-                post("/api/payment-cards")
+                post("/api/cards")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("""
                         {

@@ -18,7 +18,7 @@ public class GlobalControllerExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST));
     }
 
-    @ExceptionHandler(RecordStillActiveException.class)
+    @ExceptionHandler(NoMoreCardsAllowed.class)
     public ResponseEntity<ErrorResponse> handleNoMoreCardsAllow(NoMoreCardsAllowed ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST));
     }
@@ -29,7 +29,7 @@ public class GlobalControllerExceptionHandler {
     }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handleEmailAlreadyExists(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorResponse> handleEmailAlreadyExists(EmailAlreadyExistsException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST));
     }
 
