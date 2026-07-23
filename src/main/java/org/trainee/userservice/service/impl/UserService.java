@@ -2,6 +2,7 @@ package org.trainee.userservice.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,7 +43,7 @@ public class UserService implements CrudOperations<UserRequestDto, UserResponseD
         return mapper.map(created);
     }
 
-    @CacheEvict(value = "users", key = "#id")
+    @CachePut(value = "users", key = "#id")
     @Override
     @Transactional
     public UserResponseDto update(Long id, UserRequestDto userDto) {
@@ -77,7 +78,7 @@ public class UserService implements CrudOperations<UserRequestDto, UserResponseD
         return mapper.map(repository.findAll());
     }
 
-    @CacheEvict(value = "users", key = "#id")
+    @CachePut(value = "users", key = "#id")
     @Override
     @Transactional
     public void activate(Long id) {
@@ -85,7 +86,7 @@ public class UserService implements CrudOperations<UserRequestDto, UserResponseD
         repository.activate(id);
     }
 
-    @CacheEvict(value = "users", key = "#id")
+    @CachePut(value = "users", key = "#id")
     @Override
     @Transactional
     public void deactivate(Long id) {
